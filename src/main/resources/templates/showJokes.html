@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+<head>
+    <title>Jokes</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+<h2>List of Jokes</h2>
+
+<table>
+    <tr>
+        <th>#</th>
+        <th>Category</th>
+        <th>Content</th>
+        <th>Likes</th>
+        <th>Dislikes</th>
+        <th>Razlika</th>
+        <th>Actions</th>
+    </tr>
+
+    <tr th:each="joke, redniBroj : ${jokes}">
+        <td th:text="${redniBroj.count}">#</td>
+        <td th:text="${joke.category.name}">Category</td>
+        <td th:text="${joke.content}">Content</td>
+        <td th:text="${joke.likes}">Likes</td>
+        <td th:text="${joke.dislikes}">Dislikes</td>
+        <td th:text="${@razlikaLajkanjaService.izracunajRazlikuLajkova(joke.likes ,joke.dislikes)}"></td>
+        <td>
+            <form class="button" th:action="@{/addLike/}+${joke.id}" method="POST">
+                <input type="submit" value="Like" style="height:25px; width:60px"/>
+            </form>
+            <form class="button" th:action="@{/addDislike/}+${joke.id}" method="POST">
+                <input type="submit" value="Dislike" style="height:25px; width:60px"/>
+            </form>
+        </td>
+    </tr>
+</table>
+<div>
+    <a href="/addJoke">Create a new joke</a>
+</div>
+
+</body>
+</html>

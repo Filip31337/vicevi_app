@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Jokes Form</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<h1>Add Joke</h1>
+
+<form action="#" th:action="@{/addJoke}" th:object="${joke}" method="post">
+    <p>
+        <input type="hidden" th:field="*{id}">
+    </p>
+    <p>
+        Content: <input type="text" th:field="*{content}" size="45">
+    </p>
+    <p
+        th:if="${#fields.hasErrors('content')}" th:errors="*{content}">Potrebno je popuniti polje content
+    </p>
+    <p>
+        <input type="hidden" th:field="*{likes}">
+    </p>
+    <p>
+        <input type="hidden" th:field="*{dislikes}">
+    </p>
+    Category: <select th:field="*{category_id}">
+        <option th:each="category : ${categories}" th:value="${category.id}"th:text="${category.name}"/>
+    </select>
+    <p
+            th:if="${#fields.hasErrors('category_id')}" th:errors="*{category_id}">Potrebno je popuniti category_id
+    </p>
+    <p>
+        <input type="submit" value="ADD"/> <input type="reset" value="RESET">
+    </p>
+
+</form>
+<div>
+    <a href="/">Go back</a>
+</div>
+
+</body>
+</html>
