@@ -5,11 +5,16 @@ import com.zadatak.vicevi_app.model.Joke;
 import com.zadatak.vicevi_app.service.CategoryService;
 import com.zadatak.vicevi_app.service.JokeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -25,19 +30,26 @@ public class JokeController {
     }
 
     @GetMapping("/")
-    public String findJokes(Model model, @ModelAttribute(value="joke") Joke joke) {
+    public String findJokes(HttpServletRequest request,Model model, @ModelAttribute(value="joke") Joke joke) {
 
-        List<Joke> jokes = jokeService.findAll();
-        jokes.sort((Joke joke1, Joke joke2)-> {
-            return (int) ((joke2.getLikes()-joke2.getDislikes())-(joke1.getLikes()-joke1.getDislikes()));
-        });
+        int page = 0; //default page number is 0 (yes it is weird)
+        int size = 10; //default page size is 10
+
+        if (request.getParameter("page") != null && !request.getParameter("page").isEmpty()) {
+            page = Integer.parseInt(request.getParameter("page")) - 1;
+        }
+
+        if (request.getParameter("size") != null && !request.getParameter("size").isEmpty()) {
+            size = Integer.parseInt(request.getParameter("size"));
+        }
+
+        Page<Joke> jokes = jokeService.findAll(PageRequest.of(page, size));
+
         model.addAttribute("jokes", jokes);
-
 
 
         return "showJokes";
     }
-
 
     @PostMapping("/addJoke")
     public String addJoke(@Valid @ModelAttribute(value="joke") Joke joke, BindingResult bindingResult, Model model) {
@@ -70,16 +82,21 @@ public class JokeController {
         return "JokeForm";
     }
 
-    @RequestMapping("/addLike/{id}")
-    public String addLike(@PathVariable(name = "id") String id) {
+    @RequestMapping("/addLike/{id}/{page}")
+    public String addLike(@PathVariable(name = "id") String id, @PathVariable(name = "page") String page) {
         jokeService.digniLike(Integer.valueOf(id));
-        return "redirect:/";
+        int currentPage = Integer.parseInt(page) + 1;
+        return "redirect:/?page=" + currentPage;
     }
 
-    @RequestMapping("/addDislike/{id}")
-    public String addDislike(@PathVariable(name = "id") String id) {
+    @RequestMapping("/addDislike/{id}/{page}")
+    public String addDislike(@PathVariable(name = "id") String id, @PathVariable(name = "page") String page) {
         jokeService.digniDislike(Integer.valueOf(id));
-        return "redirect:/";
+        int currentPage = Integer.parseInt(page) + 1;
+        return "redirect:/?page=" + currentPage;
     }
+
+
+
 
 }

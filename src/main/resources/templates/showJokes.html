@@ -16,6 +16,39 @@ td, th {
 tr:nth-child(even) {
   background-color: #dddddd;
 }
+
+nav ul li {
+    display: inline-block;
+    width: 55px;
+    font-weight: bold;
+    font-size: 30px;
+    color: black;
+}
+
+.category{
+    width: 100px;
+    text-align: center;
+}
+
+.likes{
+    text-align: center;
+    width: 100px;
+}
+
+.dislikes{
+    text-align: center;
+    width: 100px;
+}
+
+.content{
+    text-align: center;
+    width: 1400px;
+}
+
+.createJoke{
+    font-weight: bold;
+    font-size: 20px;
+}
 </style>
 <head>
     <title>Jokes</title>
@@ -38,25 +71,52 @@ tr:nth-child(even) {
     </tr>
 
     <tr th:each="joke, redniBroj : ${jokes}">
-        <td th:text="${redniBroj.count}">#</td>
+        <td th:text="${jokes.number>0} ? ${redniBroj.count}+${jokes.number*10} : ${redniBroj.count}">
+
+">#</td>
         <td th:text="${joke.category.name}">Category</td>
         <td th:text="${joke.content}">Content</td>
         <td th:text="${joke.likes}">Likes</td>
         <td th:text="${joke.dislikes}">Dislikes</td>
         <td th:text="${@razlikaLajkanjaService.izracunajRazlikuLajkova(joke.likes ,joke.dislikes)}"></td>
         <td>
-            <form class="button" th:action="@{/addLike/}+${joke.id}" method="POST">
+            <form class="button" th:action="@{/addLike/}+${joke.id}+'/'+${jokes.number}" method="POST">
                 <input type="submit" value="Like" style="height:25px; width:60px"/>
             </form>
-            <form class="button" th:action="@{/addDislike/}+${joke.id}" method="POST">
+            <form class="button" th:action="@{/addDislike/}+${joke.id}+'/'+${jokes.number}" method="POST">
                 <input type="submit" value="Dislike" style="height:25px; width:60px"/>
             </form>
         </td>
     </tr>
 </table>
 <div>
-    <a href="/addJoke">Create a new joke</a>
+    <a class="createJoke" href="/addJoke">Create a new joke</a>
 </div>
 
 </body>
+
+<nav aria-label="Pagination" th:if="${jokes.totalPages gt 0}">
+    <ul class="pagination justify-content-center font-weight-bold">
+        <li class="page-item" th:classappend="${jokes.number eq 0} ? 'disabled'">
+            <a class="page-link"
+               th:href="@{/?page={id}(id=${jokes.number lt 2 ? 1 : jokes.number})}"
+               aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <li class="page-item" th:classappend="${i eq jokes.number + 1} ? 'active'"
+            th:each="i : ${#numbers.sequence( 1, jokes.totalPages, 1)}">
+            <a class="page-link" th:href="@{/?page={id}(id=${i})}" th:text="${i}"
+               th:title="${'Page '+ i}" data-toggle="tooltip"></a>
+        </li>
+        <li class="page-item" th:classappend="${jokes.number + 1 eq jokes.totalPages} ? 'disabled'">
+            <a class="page-link"
+               th:href="@{/?page={id}(id=${jokes.number + 2})}"
+               aria-label="Next" title="Next Page" data-toggle="tooltip">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+
 </html>
