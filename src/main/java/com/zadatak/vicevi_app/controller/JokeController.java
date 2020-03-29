@@ -30,8 +30,8 @@ public class JokeController {
     @GetMapping("/")
     public String findJokes(HttpServletRequest request,Model model, @ModelAttribute(value="joke") Joke joke) {
 
-        int page = 0; //default page number is 0 (yes it is weird)
-        int size = 10; //default page size is 10
+        int page = 0;
+        int size = 10;
 
         if (request.getParameter("page") != null && !request.getParameter("page").isEmpty()) {
             page = Integer.parseInt(request.getParameter("page")) - 1;
@@ -93,13 +93,5 @@ public class JokeController {
         int currentPage = Integer.parseInt(page) + 1;
         return "redirect:/?page=" + currentPage;
     }
-
-/*    @RequestMapping("/login")
-    public String login(){
-        return "login";
-    }*/
-
-
-
 
 }
