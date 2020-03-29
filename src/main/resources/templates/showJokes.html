@@ -57,7 +57,7 @@ nav ul li {
 </head>
 
 <body>
-<h2>List of Jokes</h2>
+<h2>Lista viceva</h2>
 
 <table>
     <tr>
@@ -89,9 +89,10 @@ nav ul li {
         </td>
     </tr>
 </table>
-<div>
-    <a class="createJoke" href="/addJoke">Create a new joke</a>
-</div>
+
+<form th:action="@{/addJoke}" method="get">
+    <input type="submit" value="Dodaj novi vic"/>
+</form>
 
 </body>
 

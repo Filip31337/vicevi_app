@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
-<h1>Add Joke</h1>
+<h1 th:inline="text">Dobro došli [[${#httpServletRequest.remoteUser}]]!</h1>
+<h2>Dodajte vic u sustav</h2>
 
 <form action="#" th:action="@{/addJoke}" th:object="${joke}" method="post">
     <p>
@@ -35,9 +36,14 @@
     </p>
 
 </form>
-<div>
-    <a href="/">Go back</a>
-</div>
+
+<form th:action="@{/}" method="get">
+    <input type="submit" value="Nazad na pregled"/>
+</form>
+
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Odjava iz sustava"/>
+</form>
 
 </body>
 </html>
